@@ -8,7 +8,7 @@ export default function index() {
         <SafeAreaView>
             <View>
                 <Text>Home View / route</Text>
-                <Link href={'list'} >continue</Link>
+                <Link href={'/list'} >continue</Link>
             </View>
         </SafeAreaView>
     )
