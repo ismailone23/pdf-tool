@@ -12,7 +12,6 @@ export default function Home() {
         (async () => {
             try {
                 const value = await AsyncStorage.getItem(COUNT_KEY);
-                console.log(value);
                 if (value == null) {
                     try {
                         await AsyncStorage.setItem(COUNT_KEY, String(prevdata));
