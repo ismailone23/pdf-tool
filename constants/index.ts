@@ -13,3 +13,5 @@ export const routes = [
     }
 ]
 export const primaryColor = '#4493f8'
+
+export const COUNT_KEY = 'count-key'
