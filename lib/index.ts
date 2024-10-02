@@ -6,40 +6,40 @@ import { Dispatch, SetStateAction } from 'react';
 import { Platform } from 'react-native';
 
 export const handleFileUpload = async ({
-    setCsuri,
     setIsPicked,
     setFiles,
-    files
+    files,
+    setCtxFiles
 }: {
-    setCsuri: Dispatch<SetStateAction<string>>;
     setIsPicked: Dispatch<SetStateAction<boolean>>;
     setFiles: Dispatch<SetStateAction<extendedpic[]>>;
+    setCtxFiles: Dispatch<SetStateAction<extendedpic[]>>;
     files: extendedpic[];
 }) => {
-    setCsuri('');
-    setIsPicked(files.length > 0)
     const result = await DocumentPicker.getDocumentAsync({
         type: 'application/pdf',
         copyToCacheDirectory: false,
         multiple: true
     });
-    if (result.canceled) return
-
-    const filesarr = result.assets
-
-    const xarr: extendedpic[] = []
-
-    for (let i = 0; i < filesarr.length; i++) {
-        const uri = encodeu(filesarr[i].uri)
-        xarr.push({ ...filesarr[i], uri, id: Math.random() })
-        xarr[0]
-    }
-    const newfiletray = [...files, ...xarr]
-    setFiles(newfiletray)
+    if (result.canceled) return setIsPicked(files.length > 0 ? true : false)
     setIsPicked(true)
+    const selectedFilesArr = result.assets
+    const refinedArr: extendedpic[] = []
+    for (let i = 0; i < selectedFilesArr.length; i++) {
+        const encdoeuri = encodeu(selectedFilesArr[i].uri)
+        refinedArr.push({ ...selectedFilesArr[i], id: Math.random(), uri: encdoeuri })
+    }
+
+    setFiles(p => ([...p, ...refinedArr]))
+
     try {
-        const traydata = await AsyncStorage.getItem(PDF_TRAY)
-        await AsyncStorage.setItem(PDF_TRAY, JSON.stringify(traydata ? [...newfiletray, ...JSON.parse(traydata) as extendedpic[]] : newfiletray))
+        const filesarrforstorage: extendedpic[] = [...refinedArr]
+        const storagedata = await AsyncStorage.getItem(PDF_TRAY);
+        if (storagedata) {
+            filesarrforstorage.push(...JSON.parse(storagedata) as extendedpic[])
+        }
+        setCtxFiles(filesarrforstorage)
+        await AsyncStorage.setItem(PDF_TRAY, JSON.stringify(filesarrforstorage))
     } catch (error) {
         console.log(error);
     }

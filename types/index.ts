@@ -10,6 +10,8 @@ export interface contextinterface {
     setTitle: Dispatch<SetStateAction<string>>
     loading: boolean
     setLoading: Dispatch<SetStateAction<boolean>>
+    ctxFiles: extendedpic[]
+    setCtxFiles: Dispatch<SetStateAction<extendedpic[]>>
 }
 
 export type documentpicker = DocumentPicker.DocumentPickerAsset
